@@ -17,8 +17,6 @@ teta0 = 0.0
 teta1 = 0.0
 error = []
 
-
-
 def  estimateprice(teta0, teta1, milleage):
     return (teta0 +  (teta1* milleage))
 
@@ -81,7 +79,7 @@ def show_error():
 def estimate_teta(teta0, teta1):
     tmp0 = 0
     tmp1 = 0
-    while len(error) < 2 or  error[-2] - error[-1] != 0.0 :
+    while (len(error) < 2 or  error[-2] - error[-1] != 0.0) and len(error) != 1000000:
         tmp0 -= estimatetmpteta0(teta0, teta1, km, price,lear)
         tmp1 -= estimatetmpteta1(teta0, teta1, km, price,lear)
         error.append(error_price(teta0, teta1, km, price,lear))
