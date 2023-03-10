@@ -1,7 +1,6 @@
 import array as arr
 import matplotlib.pyplot as plt
 
-
 class linear_regression:
     ordonnee_relative = []
     abscisse_relative = []
@@ -11,10 +10,10 @@ class linear_regression:
     teta0 = 0.0
     teta1 = 0.0
     error = []
-    ordonnee_relative_limite = [0,0]
-    abscisse_relative_limite = [0,0]
+    ordonnee_relative_limite = [0, 0]
+    abscisse_relative_limite = [0, 0]
     def __init__(self, data):
-        for index in range(len(data)-1):
+        for index in range(len(data) - 1):
             v = data[index+1].split(',')
             self.ordonnee_relative.append(int(v[0]))
             self.abscisse_relative.append(int(v[1]))
@@ -74,7 +73,7 @@ class linear_regression:
     def show_absolue(self):
         plt.figure("ft_linear_regression")
         plt.scatter(self.ordonnee_relative, self.abscisse_relative)
-        plt.plot([0,  self.ordonnee_relative_limite[1]],[self.estimate_abscisse_absolue(0), \
+        plt.plot([0,  self.ordonnee_relative_limite[1]], [self.estimate_abscisse_absolue(0), \
                             self.estimate_abscisse_absolue(self.ordonnee_relative_limite[1])], \
                             color = 'green', linestyle = 'solid')
         plt.ylabel(self.index[0])
@@ -100,17 +99,17 @@ class linear_regression:
         self.teta1_asbolue = self.teta1 / ((self.ordonnee_relative_limite[1] - self.ordonnee_relative_limite[0]) / (self.abscisse_relative_limite[1] - self.abscisse_relative_limite[0]))
         self.teta0_asbolue = (self.teta0 * (self.abscisse_relative_limite[1] - self.abscisse_relative_limite[0])) + self.abscisse_relative_limite[0] - self.teta1_asbolue * self.ordonnee_relative_limite[0]
         self.error.append(self.error_abscisse())
-    
+ 
 data = open("data.csv", "r")
-line = linear_regression((data.read()).split())
+linear = linear_regression((data.read()).split())
 data.close()
-line.init_valeur_relative()
-line.estimate_teta()
-line.show_relative()
-line.show_absolue()
-line.show_error()
-fin = open("ft_linear_regression.csv","w")
-fin.write(line.index[0]+","+line.index[1]+"\n")
-valeur = "%f,%f\n" % (line.teta0_asbolue,line.teta1_asbolue)
-fin.write(valeur)
-fin.close()
+linear.init_valeur_relative()
+linear.estimate_teta()
+linear.show_relative()
+linear.show_absolue()
+linear.show_error()
+end = open("ft_linear_regression.csv", "w")
+end.write(linear.index[0]+","+linear.index[1] + "\n")
+valeur = "%f,%f\n" % (linear.teta0_asbolue,linear.teta1_asbolue)
+end.write(valeur)
+end.close()
