@@ -36,7 +36,7 @@ class linear_regression:
         return (self.teta0 + (self.teta1 * x))
             
     def  estimate_abscisse_absolue(self, x):
-        return (self.nteta0 + (self.nteta1 * x))
+        return (self.teta0_asbolue + (self.teta1_asbolue * x))
 
     def estimate_tmpteta0(self):
         tmp = 0
@@ -97,8 +97,8 @@ class linear_regression:
             self.error.append(self.error_abscisse())
             self.teta0 = tmp0
             self.teta1 = tmp1
-        self.nteta1 = self.teta1 / ((self.ordonnee_relative_limite[1] - self.ordonnee_relative_limite[0]) / (self.abscisse_relative_limite[1] - self.abscisse_relative_limite[0]))
-        self.nteta0 = (self.teta0 * (self.abscisse_relative_limite[1] - self.abscisse_relative_limite[0])) + self.abscisse_relative_limite[0] - self.nteta1 * self.ordonnee_relative_limite[0]
+        self.teta1_asbolue = self.teta1 / ((self.ordonnee_relative_limite[1] - self.ordonnee_relative_limite[0]) / (self.abscisse_relative_limite[1] - self.abscisse_relative_limite[0]))
+        self.teta0_asbolue = (self.teta0 * (self.abscisse_relative_limite[1] - self.abscisse_relative_limite[0])) + self.abscisse_relative_limite[0] - self.teta1_asbolue * self.ordonnee_relative_limite[0]
         self.error.append(self.error_abscisse())
     
 data = open("data.csv", "r")
@@ -111,6 +111,6 @@ line.show_absolue()
 line.show_error()
 fin = open("ft_linear_regression.csv","w")
 fin.write(line.index[0]+","+line.index[1]+"\n")
-valeur = "%f,%f\n" % (line.nteta0,line.nteta1)
+valeur = "%f,%f\n" % (line.teta0_asbolue,line.teta1_asbolue)
 fin.write(valeur)
 fin.close()
