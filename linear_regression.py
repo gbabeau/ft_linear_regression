@@ -1,26 +1,27 @@
 import array as arr
 import matplotlib.pyplot as plt
-
+from scipy import stats
 class linear_regression:
-    ordonnee_relative = []
-    abscisse_relative = []
+    ordonnee_absolue = []
+    abscisse_absolue = []
     ordonnee = [] 
     abscisse = []
     lear = 0.5
     teta0 = 0.0
     teta1 = 0.0
     error = []
-    ordonnee_relative_limite = [0, 0]
-    abscisse_relative_limite = [0, 0]
+    ordonnee_absolue_limite = [0, 0]
+    abscisse_absolue_limite = [0, 0]
     def __init__(self, data):
         for index in range(len(data) - 1):
             v = data[index+1].split(',')
-            self.ordonnee_relative.append(int(v[0]))
-            self.abscisse_relative.append(int(v[1]))
-        self.ordonnee_relative_limite[0] = min(self.ordonnee_relative)
-        self.abscisse_relative_limite[0] = min(self.abscisse_relative)
-        self.ordonnee_relative_limite[1] = max(self.ordonnee_relative)
-        self.abscisse_relative_limite[1] = max(self.abscisse_relative)
+            print(v[1])
+            self.ordonnee_absolue.append(int(v[1]))
+            self.abscisse_absolue.append(int(v[2]))
+        self.ordonnee_absolue_limite[0] = min(self.ordonnee_absolue)
+        self.abscisse_absolue_limite[0] = min(self.abscisse_absolue)
+        self.ordonnee_absolue_limite[1] = max(self.ordonnee_absolue)
+        self.abscisse_absolue_limite[1] = max(self.abscisse_absolue)
         self.index = data[0].split(',')
         self.ordonnee = [] 
         self.abscisse = []
@@ -56,14 +57,15 @@ class linear_regression:
         return tmp / len(self.ordonnee)
 
     def init_valeur_relative(self):
-        for index in range(len(self.ordonnee_relative)):
-            self.ordonnee.append((self.ordonnee_relative[index] - self.ordonnee_relative_limite[0])/ (self.ordonnee_relative_limite[1] - self.ordonnee_relative_limite[0]))
-            self.abscisse.append((self.abscisse_relative[index] - self.abscisse_relative_limite[0])/ (self.abscisse_relative_limite[1] - self.abscisse_relative_limite[0]))
+        for index in range(len(self.ordonnee_absolue)):
+            self.ordonnee.append((self.ordonnee_absolue[index] - self.ordonnee_absolue_limite[0])/ (self.ordonnee_absolue_limite[1] - self.ordonnee_absolue_limite[0]))
+            self.abscisse.append((self.abscisse_absolue[index] - self.abscisse_absolue_limite[0])/ (self.abscisse_absolue_limite[1] - self.abscisse_absolue_limite[0]))
 
     def show_relative(self):
         plt.figure("ft_linear_regression")
         plt.scatter(self.ordonnee, self.abscisse)
         plt.plot([min(self.ordonnee), max(self.ordonnee)],[self.estimate_abscisse(min(self.ordonnee)), self.estimate_abscisse(max(self.ordonnee))], color = 'green', linestyle = 'solid')
+        plt.plot([min(self.ordonnee), max(self.ordonnee)],[myfunc(min(self.ordonnee)), myfunc(max(self.ordonnee))], color = 'red', linestyle = 'solid')
         plt.ylabel(self.index[0])
         plt.xlabel(self.index[1])
         plt.title("relative")
@@ -72,10 +74,13 @@ class linear_regression:
 
     def show_absolue(self):
         plt.figure("ft_linear_regression")
-        plt.scatter(self.ordonnee_relative, self.abscisse_relative)
-        plt.plot([0,  self.ordonnee_relative_limite[1]], [self.estimate_abscisse_absolue(0), \
-                            self.estimate_abscisse_absolue(self.ordonnee_relative_limite[1])], \
+        plt.scatter(self.ordonnee_absolue, self.abscisse_absolue)
+        plt.plot([0,  self.ordonnee_absolue_limite[1]], [self.estimate_abscisse_absolue(0), \
+                            self.estimate_abscisse_absolue(self.ordonnee_absolue_limite[1])], \
                             color = 'green', linestyle = 'solid')
+        plt.plot([0,  self.ordonnee_absolue_limite[1]], [myfunc(0), \
+                            myfunc(self.ordonnee_absolue_limite[1])], \
+                            color = 'red', linestyle = 'solid')
         plt.ylabel(self.index[0])
         plt.xlabel(self.index[1])
         plt.title("absolue")
@@ -96,16 +101,22 @@ class linear_regression:
             self.error.append(self.error_abscisse())
             self.teta0 = tmp0
             self.teta1 = tmp1
-        self.teta1_asbolue = self.teta1 / ((self.ordonnee_relative_limite[1] - self.ordonnee_relative_limite[0]) / (self.abscisse_relative_limite[1] - self.abscisse_relative_limite[0]))
-        self.teta0_asbolue = (self.teta0 * (self.abscisse_relative_limite[1] - self.abscisse_relative_limite[0])) + self.abscisse_relative_limite[0] - self.teta1_asbolue * self.ordonnee_relative_limite[0]
+        self.teta1_asbolue = self.teta1 / ((self.ordonnee_absolue_limite[1] - self.ordonnee_absolue_limite[0]) / (self.abscisse_absolue_limite[1] - self.abscisse_absolue_limite[0]))
+        self.teta0_asbolue = (self.teta0 * (self.abscisse_absolue_limite[1] - self.abscisse_absolue_limite[0])) + self.abscisse_absolue_limite[0] - self.teta1_asbolue * self.ordonnee_absolue_limite[0]
         self.error.append(self.error_abscisse())
+
  
-data = open("data.csv", "r")
+def myfunc(x):
+  return slope * x + intercept
+
+data = open("Housing.csv", "r")
 linear = linear_regression((data.read()).split())
 data.close()
 linear.init_valeur_relative()
 linear.estimate_teta()
+slope, intercept, r, p, std_err = stats.linregress(linear.ordonnee, linear.abscisse)
 linear.show_relative()
+slope, intercept, r, p, std_err = stats.linregress(linear.ordonnee_absolue, linear.abscisse_absolue)
 linear.show_absolue()
 linear.show_error()
 end = open("ft_linear_regression.csv", "w")
